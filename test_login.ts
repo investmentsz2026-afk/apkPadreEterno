@@ -2,7 +2,7 @@ import axios from 'axios';
 
 (async () => {
   try {
-    const res = await axios.post('https://apkpadreeterno.onrender.com/api/auth/login', {
+    const res = await axios.post('https://apkpadreeterno1.onrender.com/api/auth/login', {
       email: 'floreria_jardines@hotmail.com',
       password: 'admin123',
     }, {

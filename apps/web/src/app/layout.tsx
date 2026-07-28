@@ -23,6 +23,11 @@ export default function RootLayout({
   return (
     <html lang="es" className="h-full">
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#e11d48" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="apple-touch-icon" href="/logo.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -36,6 +41,15 @@ export default function RootLayout({
                   }
                 } catch (e) {}
               })();
+
+              if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').then(
+                    function(reg) { console.log('PWA ServiceWorker registered'); },
+                    function(err) { console.log('PWA ServiceWorker registration failed', err); }
+                  );
+                });
+              }
             `,
           }}
         />

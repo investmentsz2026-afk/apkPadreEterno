@@ -76,6 +76,8 @@ export default function ClientsPage() {
     remarks: '',
     lastPaymentDate: '',
     nextDueDate: '',
+    anniversaryDate: '',
+    anniversaryRemarks: '',
   });
 
   // B. Formularios Locales - Registrar Pago
@@ -320,6 +322,8 @@ export default function ClientsPage() {
       remarks: '',
       lastPaymentDate: '',
       nextDueDate: '',
+      anniversaryDate: '',
+      anniversaryRemarks: '',
     });
     setEditingClient(null);
     setFormError(null);
@@ -347,6 +351,8 @@ export default function ClientsPage() {
       remarks: client.remarks || '',
       lastPaymentDate: client.lastPaymentDate ? new Date(client.lastPaymentDate).toISOString().split('T')[0] : '',
       nextDueDate: client.nextDueDate ? new Date(client.nextDueDate).toISOString().split('T')[0] : '',
+      anniversaryDate: client.anniversaryDate ? new Date(client.anniversaryDate).toISOString().split('T')[0] : '',
+      anniversaryRemarks: client.anniversaryRemarks || '',
     });
     setClientModalOpen(true);
   };
@@ -373,6 +379,8 @@ export default function ClientsPage() {
       sectorId: clientForm.sectorId || undefined,
       lastPaymentDate: clientForm.lastPaymentDate || undefined,
       nextDueDate: clientForm.nextDueDate || undefined,
+      anniversaryDate: clientForm.anniversaryDate || undefined,
+      anniversaryRemarks: clientForm.anniversaryRemarks || undefined,
       amount: parseFloat(clientForm.amount.toString()) || 0.0
     };
 
@@ -581,7 +589,14 @@ export default function ClientsPage() {
                       return (
                         <tr key={client.id} className="hover:bg-secondary/15 transition-colors">
                           <td className="px-3 py-3.5 font-medium text-gray-700 dark:text-gray-300">{client.contactName || '-'}</td>
-                          <td className="px-3 py-3.5 font-bold text-foreground">{client.fullName}</td>
+                          <td className="px-3 py-3.5">
+                            <span className="font-bold text-foreground block">{client.fullName}</span>
+                            {client.anniversaryDate && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded mt-0.5 border border-indigo-500/10">
+                                🎂 {formatUtcDate(client.anniversaryDate)}: {client.anniversaryRemarks || 'Aniversario'}
+                              </span>
+                            )}
+                          </td>
                           <td className="px-3 py-3.5 text-gray-500 font-mono">{client.dni}</td>
                           <td className="px-3 py-3.5 text-gray-500 font-mono">{client.phone}</td>
                           <td className="px-3 py-3.5">
@@ -954,6 +969,30 @@ export default function ClientsPage() {
                             value={clientForm.nextDueDate}
                             onChange={(e) => setClientForm(prev => ({ ...prev, nextDueDate: e.target.value }))}
                             className="mt-1 block w-full rounded-xl border border-border bg-background px-3 py-2 text-xs outline-none cursor-pointer focus:border-primary focus:ring-1 focus:ring-primary font-mono text-gray-700 dark:text-gray-300"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Cumpleaños / Aniversario Conmemorativo */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Fecha de Aniversario / Cumpleaños</label>
+                          <input
+                            type="date"
+                            value={clientForm.anniversaryDate}
+                            onChange={(e) => setClientForm(prev => ({ ...prev, anniversaryDate: e.target.value }))}
+                            className="mt-1 block w-full rounded-xl border border-border bg-background px-3 py-2 text-xs outline-none cursor-pointer focus:border-primary focus:ring-1 focus:ring-primary font-mono text-gray-700 dark:text-gray-300"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Detalle del Aniversario (Motivo)</label>
+                          <input
+                            type="text"
+                            value={clientForm.anniversaryRemarks}
+                            onChange={(e) => setClientForm(prev => ({ ...prev, anniversaryRemarks: e.target.value }))}
+                            placeholder="Ej. Cumpleaños / Fallecimiento"
+                            className="mt-1 block w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                           />
                         </div>
                       </div>

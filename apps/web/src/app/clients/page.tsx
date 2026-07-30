@@ -36,6 +36,26 @@ const formatUtcDate = (dateStr: string | null | undefined) => {
   return `${day}/${month}/${year}`;
 };
 
+const getAnniversaryDaysRemaining = (dateStr: string | null | undefined) => {
+  if (!dateStr) return null;
+  const annDate = new Date(dateStr);
+  if (isNaN(annDate.getTime())) return null;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Fecha del aniversario este año
+  let targetDate = new Date(today.getFullYear(), annDate.getUTCMonth(), annDate.getUTCDate());
+
+  // Si ya pasó este año, calculamos para el siguiente año
+  if (targetDate.getTime() < today.getTime()) {
+    targetDate.setFullYear(today.getFullYear() + 1);
+  }
+
+  const diffTime = targetDate.getTime() - today.getTime();
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
+
 export default function ClientsPage() {
   const queryClient = useQueryClient();
   
@@ -406,6 +426,23 @@ export default function ClientsPage() {
     }
   };
 
+  const handleSendWhatsAppReminder = (client: any) => {
+    if (!client.phone || !client.phone.trim()) {
+      alert("Este cliente no tiene número de teléfono registrado, así que no se puede enviar el mensaje de WhatsApp.");
+      return;
+    }
+
+    const cleanPhone = client.phone.replace(/\D/g, '');
+    const formattedPhone = cleanPhone.startsWith('51') ? cleanPhone : `51${cleanPhone}`;
+    const dateFormatted = formatUtcDate(client.anniversaryDate);
+    const reason = client.anniversaryRemarks || 'su aniversario';
+
+    const message = `Hola ${client.contactName || 'estimado cliente'}, de parte de Florería Padre Eterno le escribimos porque se acerca una fecha muy especial: el ${dateFormatted} es el ${reason} de ${client.fullName}. ¿Le gustaría separar un ramo especial o arreglo floral para esta conmemoración?`;
+
+    const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
+
   // Helper Badge
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -592,9 +629,33 @@ export default function ClientsPage() {
                           <td className="px-3 py-3.5">
                             <span className="font-bold text-foreground block">{client.fullName}</span>
                             {client.anniversaryDate && (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded mt-0.5 border border-indigo-500/10">
-                                🎂 {formatUtcDate(client.anniversaryDate)}: {client.anniversaryRemarks || 'Aniversario'}
-                              </span>
+                              <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                                <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+                                  (() => {
+                                    const days = getAnniversaryDaysRemaining(client.anniversaryDate);
+                                    if (days !== null && days <= 7) {
+                                      return 'bg-amber-500/10 text-amber-500 border-amber-500/20 animate-pulse';
+                                    }
+                                    return 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20';
+                                  })()
+                                }`}>
+                                  🎂 {formatUtcDate(client.anniversaryDate)}: {client.anniversaryRemarks || 'Aniversario'}
+                                  {(() => {
+                                    const days = getAnniversaryDaysRemaining(client.anniversaryDate);
+                                    if (days !== null && days <= 7) {
+                                      return ` (¡Próximo, quedan ${days}d!)`;
+                                    }
+                                    return '';
+                                  })()}
+                                </span>
+                                <button
+                                  onClick={() => handleSendWhatsAppReminder(client)}
+                                  className="inline-flex items-center justify-center rounded px-1.5 py-0.5 text-[9px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer"
+                                  title="Enviar Recordatorio por WhatsApp"
+                                >
+                                  💬 Enviar Recordatorio
+                                </button>
+                              </div>
                             )}
                           </td>
                           <td className="px-3 py-3.5 text-gray-500 font-mono">{client.dni}</td>

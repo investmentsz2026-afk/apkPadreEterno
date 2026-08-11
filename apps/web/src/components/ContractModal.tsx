@@ -363,7 +363,7 @@ export function ContractModal({ clientId, isOpen, onClose }: ContractModalProps)
               {/* Firmas */}
               <div className="grid grid-cols-2 gap-12 pt-20 mt-12 text-center text-[11px]">
                 <div className="flex flex-col items-center justify-end">
-                  <p className="font-bold text-gray-800 mb-1">WILLIAM SANTANA</p>
+                  <p className="font-bold text-gray-800 mb-1">ANGELICA MENA</p>
                   <div className="w-48 border-b border-black border-dashed mb-2"></div>
                   <p className="font-bold text-gray-700">LA CONCESIONARIA</p>
                   <p className="text-gray-500">Florería Padre Eterno</p>

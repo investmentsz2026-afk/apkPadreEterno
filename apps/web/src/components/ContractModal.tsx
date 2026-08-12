@@ -304,7 +304,7 @@ export function ContractModal({ clientId, isOpen, onClose }: ContractModalProps)
                   <span className="font-bold">2051051844</span>, a quien en adelante se le denominará{' '}
                   <span className="font-bold">LA CONCESIONARIA</span> y de la otra parte, el señor (a){' '}
                   <span className="font-bold">
-                    {client.contactName?.trim() || client.fullName?.trim()}
+                    __________________________________________________________________
                   </span>{' '}
                   con Nº de Teléfono <span className="font-bold">{client.phone || '______'}</span> al que en lo
                   sucesivo se le denominará <span className="font-bold">EL CLIENTE</span>, en los términos y condiciones
@@ -343,7 +343,7 @@ export function ContractModal({ clientId, isOpen, onClose }: ContractModalProps)
                 <p>
                   <span className="font-bold">CLAUSULA CUARTA.-</span> De común acuerdo, se establece como pago del
                   servicio la suma de:{' '}
-                  <span className="font-bold">S/ {client.amount ? client.amount.toFixed(2) : '0.00'}</span> con el
+                  <span className="font-bold">S/ ________________________</span> con el
                   método de pago{' '}
                   <span className="font-bold">
                     {getPaymentMethodSpanish(client.payments?.[0]?.paymentMethod)}
